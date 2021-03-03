@@ -11,12 +11,14 @@ const { db, admin } = require("./util/admin");
 
 const {
     signup,
-    login
+    login,
+    resetPassword
 } = require("./handlers/slyders");
 
 // Slyder routes
 app.post("/signup", signup);
 app.post("/login", login);
+app.post("/reset", resetPassword);
 
 exports.api = functions.https.onRequest(app);
 
