@@ -68,3 +68,32 @@ exports.signup = (req, res) => {
         }
     });
 }
+
+// Login to Slydro
+
+exports.login = (req, res) => {
+	const slyder = {
+		email: req.body.email,
+		password: req.body.password
+	};
+
+	const { valid, errors } = validateLoginData(slyder);
+
+	if (!valid) return res.status(400).json(errors);
+
+	firebase
+		.auth()
+		.signInWithEmailAndPassword(slyder.email, slyder.password)
+		.then(data => {
+			return data.user.getIdToken();
+		})
+		.then(token => {
+			return res.status(201).json({ token });
+		})
+		.catch(err => {
+			console.error(err);
+			return res
+				.status(403)
+				.json({ general: "Wrong credentials, please try again" });
+		});
+};
