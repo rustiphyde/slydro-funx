@@ -6,7 +6,8 @@ firebase.initializeApp(config);
 
 const {
     validateSignupData, 
-    validateLoginData
+    validateLoginData,
+    validateResetData
 } = require("../util/validators");
 
 // Signup user for Slydro account
@@ -97,4 +98,35 @@ exports.login = (req, res) => {
 				.status(403)
 				.json({ general: "Wrong credentials, please try again" });
 		});
+};
+
+exports.resetPassword = (req, res) => {
+	const resUser = {
+		email: req.body.email
+	};
+
+	const { valid, errors } = validateResetData(resUser);
+
+	if (!valid) {
+		return res.status(400).json(errors);
+	} else {
+		firebase
+			.auth()
+			.sendPasswordResetEmail(resUser.email)
+			.then(() => {
+				return res.status(201).json({
+					message:
+						"Your password reset email has been sent to the email address you provided"
+				});
+			})
+			.catch(err => {
+				if (err.code === "auth/user-not-found") {
+					return res.status(404).json({
+						reset: "The email you entered doesn't match any in our database"
+					});
+				} else {
+					return res.status(500).json({ error: err.code });
+				}
+			});
+	}
 };
