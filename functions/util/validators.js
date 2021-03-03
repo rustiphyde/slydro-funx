@@ -41,3 +41,14 @@ exports.validateLoginData = data => {
       valid: Object.keys(errors).length === 0 ? true : false
     };
   };
+
+  exports.validateResetData = data => {
+    let errors = {};
+  
+    if (isEmpty(data.email)) errors.email = "Field must not be empty";
+  
+    return {
+      errors,
+      valid: Object.keys(errors).length === 0 ? true : false
+    };
+  };
