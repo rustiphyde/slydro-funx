@@ -5,7 +5,8 @@ const firebase = require("firebase");
 firebase.initializeApp(config);
 
 const {
-    validateSignupData
+    validateSignupData, 
+    validateLoginData
 } = require("../util/validators");
 
 // Signup user for Slydro account
