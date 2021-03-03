@@ -10,11 +10,13 @@ app.use(cors());
 const { db, admin } = require("./util/admin");
 
 const {
-    signup
+    signup,
+    login
 } = require("./handlers/slyders");
 
 // Slyder routes
 app.post("/signup", signup);
+app.post("/login", login);
 
 exports.api = functions.https.onRequest(app);
 
