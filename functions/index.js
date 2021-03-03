@@ -9,7 +9,12 @@ app.use(cors());
 
 const { db, admin } = require("./util/admin");
 
+const {
+    signup
+} = require("./handlers/slyders");
 
+// Slyder routes
+app.post("/signup", signup);
 
 exports.api = functions.https.onRequest(app);
 
