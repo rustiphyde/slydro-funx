@@ -121,18 +121,21 @@ exports.addNewSlyde = (req, res) => {
 			return db
 				.doc(`/Slydeshows/${req.params.showId}`)
 				.collection("Slydes")
-				.add(newSlyde);
+				.add(newSlyde)
+                .then((doc) => {
+                    doc.ref.update({
+                        slydeId: doc.id
+                    })
+                    let resSlyde = newSlyde;
+                    resSlyde.slydeId = doc.id;
+                    res.json(resSlyde);
+                })
 		})
-		.then((doc) => {
-            doc.ref.update({
-                slydeId: doc.id
-            })
-            let resSlyde = newSlyde;
-            resSlyde.slydeId = doc.id;
-			res.json(resSlyde);
-		})
+		
 		.catch((err) => {
 			console.error(err);
 			res.status(500).json({ error: err.code });
 		});
 };
+
+
