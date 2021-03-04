@@ -16,7 +16,8 @@ const {
 } = require("./handlers/slyders");
 
 const {
-    getAllSlydeshows
+    getAllSlydeshows,
+    getSlydeshow
 } = require("./handlers/slydeshows");
 
 // Slyder routes
@@ -26,6 +27,7 @@ app.post("/reset", resetPassword);
 
 // Slydeshow routes
 app.get("/slydeshows", getAllSlydeshows);
+app.get("/slydeshow/:showId", getSlydeshow);
 
 exports.api = functions.https.onRequest(app);
 
