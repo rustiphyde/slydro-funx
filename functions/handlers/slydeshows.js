@@ -123,7 +123,12 @@ exports.addNewSlyde = (req, res) => {
 				.collection("Slydes")
 				.add(newSlyde);
 		})
-		.then(() => {
+		.then((doc) => {
+            doc.ref.update({
+                slydeId: doc.id
+            })
+            let resSlyde = newSlyde;
+            resSlyde.slydeId = doc.id;
 			res.json(newSlyde);
 		})
 		.catch((err) => {
