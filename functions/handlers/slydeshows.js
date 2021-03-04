@@ -10,6 +10,7 @@ exports.getAllSlydeshows = (req, res) => {
         data.forEach((doc) => {
             slydeshows.push({
                 showId: doc.id,
+                showName: doc.data().name,
                 slydeCount: doc.data().slydeCount,
                 createdAt: doc.data().createdAt,
                 addedTo: doc.data().addedTo,
@@ -55,6 +56,39 @@ exports.getSlydeshow = (req, res) => {
     .catch((err) => {
         console.error(err);
         res.status(500).json({ error: err.code });
+    });
+};
+
+exports.createNewSlydeshow = (req, res) => {
+    if (req.body.showName.trim() === "")
+     return res.status(400).json({
+         name: "You must give your slydeshow a name"
+    });
+
+    const newShow = {
+        showName: req.body.showName,
+        slyder: req.user.firstName + " " + req.user.lastName,
+        slydeCount: 0,
+        splashCount: 0,
+        dripCount: 0,
+        sprayCount: 0,
+        createdAt: new Date().toISOString(),
+        addedTo: "",
+        email: req.user.email,
+        avatar: req.user.avatar,
+    };
+
+    db.collection("Slydeshows")
+    .add(newShow)
+    .then((doc) => {
+        doc.update({ showId: doc.id });
+        const resShow = newShow;
+        resShow.showId = doc.id;
+        res.json(resShow);
+    })
+    .catch((err) => {
+        res.status(500).json({ error: err.code });
+        console.error(err);
     });
 };
 
