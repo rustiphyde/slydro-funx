@@ -15,10 +15,17 @@ const {
     resetPassword
 } = require("./handlers/slyders");
 
+const {
+    getAllSlydeshows 
+} = require("./handlers/slydeshows");
+
 // Slyder routes
 app.post("/signup", signup);
 app.post("/login", login);
 app.post("/reset", resetPassword);
+
+// Slydeshow routes
+app.get("/slydeshows", getAllSlydeshows);
 
 exports.api = functions.https.onRequest(app);
 
