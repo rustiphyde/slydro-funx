@@ -50,7 +50,7 @@ exports.signup = (req, res) => {
             firstName: newSlyder.firstName,
             lastName: newSlyder.lastName,
             email: newSlyder.email,
-            createdAt: new Date().toISOString(),
+            joined: new Date().toISOString(),
             avatar: `https://firebasestorage.googleapis.com/v0/b/$config.storageBucket}/o/${noImg}?alt=media`,
             userId,
         };
