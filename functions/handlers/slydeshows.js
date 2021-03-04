@@ -101,7 +101,8 @@ exports.addNewSlyde = (req, res) => {
 		pieceCount: 0,
 		createdAt: new Date().toISOString(),
 		showId: req.params.showId,
-        slydeName: req.body.slydeName
+        slydeName: req.body.slydeName,
+        email: req.user.email
 	};
 	db.doc(`Slydeshows/${req.params.showId}`)
 		.get()

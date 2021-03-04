@@ -18,7 +18,8 @@ const {
 const {
     getAllSlydeshows,
     getSlydeshow,
-    createNewSlydeshow
+    createNewSlydeshow,
+    addNewSlyde
 } = require("./handlers/slydeshows");
 
 // Slyder routes
@@ -30,6 +31,7 @@ app.post("/reset", resetPassword);
 app.get("/slydeshows", getAllSlydeshows);
 app.get("/show/:showId", getSlydeshow);
 app.post("/show", FBAuth, createNewSlydeshow);
+app.post("/show/:showId/slyde", FBAuth, addNewSlyde);
 
 exports.api = functions.https.onRequest(app);
 
