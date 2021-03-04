@@ -129,7 +129,7 @@ exports.addNewSlyde = (req, res) => {
             })
             let resSlyde = newSlyde;
             resSlyde.slydeId = doc.id;
-			res.json(newSlyde);
+			res.json(resSlyde);
 		})
 		.catch((err) => {
 			console.error(err);
