@@ -16,7 +16,7 @@ const {
 } = require("./handlers/slyders");
 
 const {
-    getAllSlydeshows 
+    getAllSlydeshows
 } = require("./handlers/slydeshows");
 
 // Slyder routes

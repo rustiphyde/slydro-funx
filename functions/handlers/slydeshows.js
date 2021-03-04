@@ -28,3 +28,33 @@ exports.getAllSlydeshows = (req, res) => {
         res.status(500).json({ error: err.code });
     });
 };
+
+exports.getSlydeshow = (req, res) => {
+    let showData = {};
+    db.doc(`Slydeshows/${req.params.showId}`)
+    .get()
+    .then((doc) => {
+        if (!doc.exists){
+            return res.status(400).json({ error: "Slydeshow not found "});
+        }
+        showData = doc.data();
+        showData.showId = doc.id;
+        return db
+            .collection("Slydes")
+            .where("showId", "==", req.params.showId)
+            .orderBy("slydeOrder", "asc")
+            .get()
+    })
+    .then((data) => {
+        showData.slydes = [];
+        data.forEach((doc) => {
+            showData.slydes.push(doc.data());
+        });
+        return res.json(showData);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).json({ error: err.code });
+    });
+};
+
