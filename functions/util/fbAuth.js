@@ -25,6 +25,7 @@ module.exports = (req, res, next) => {
         .get();
     })
     .then(data => {
+      req.user.email = data.docs[0].data().email;
       req.user.firstName = data.docs[0].data().firstname;
       req.user.lastName = data.docs[0].data().lastName;
       req.user.imageUrl = data.docs[0].data().imageUrl;
