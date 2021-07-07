@@ -16,8 +16,8 @@ exports.signup = (req, res) => {
         email: req.body.email,
         password: req.body.password,
         confirmPassword: req.body.confirmPassword,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName
+        alias: req.body.alias,
+        slydetag: "$" + req.body.alias.replace(/\s/g, "-").toLowerCase()
     };
 
     const { valid, errors } = validateSignupData(newSlyder);
@@ -47,14 +47,13 @@ exports.signup = (req, res) => {
     .then(idToken => {
         token = idToken;
         const slyderCredentials = {
-            firstName: newSlyder.firstName,
-            lastName: newSlyder.lastName,
+            slydetag: newSlyder.slydetag,
             email: newSlyder.email,
             joined: new Date().toISOString(),
             avatar: `https://firebasestorage.googleapis.com/v0/b/$config.storageBucket}/o/${noImg}?alt=media`,
             userId,
         };
-        return db.doc(`/Slyders/${newSlyder.email}`).set(slyderCredentials);
+        return db.doc(`/Slyders/${newSlyder.slydetag}`).set(slyderCredentials);
     })
     .then(() => {
         return res.status(201).json({ token });
@@ -97,6 +96,94 @@ exports.login = (req, res) => {
 			return res
 				.status(403)
 				.json({ general: "Wrong credentials, please try again" });
+		});
+};
+
+exports.getSlyderDetails = (req, res) => {
+    let slyderData = {};
+    db.doc(`/Slyders/${req.params.slydetag}`)
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          slyderData.slyder = doc.data();
+          return db
+            .collection("Slydeshows")
+            .where("email", "==", slyderData.slyder.email)
+            .orderBy("createdAt", "desc")
+            .get();
+        } else {
+          return res.status(404).json({ error: "Slyder not found" });
+        }
+      })
+      .then(data => {
+          slyderData.slydeshows = [];
+          data.forEach(doc => {
+                  slyderData.slydeshows.push({
+                    showId: doc.id,
+					showName: doc.data().showName,
+					slydeCount: doc.data().slydeCount,
+					createdAt: doc.data().createdAt,
+					addedTo: doc.data().addedTo,
+					slyder: doc.data().slyder,
+					email: doc.data().email,
+					avatar: doc.data().avatar,
+					splashCount: doc.data().splashCount,
+					dripCount: doc.data().dripCount,
+					sprayCount: doc.data().sprayCount,
+                  });
+          });
+        return res.json(slyderData);
+      })
+      .catch(err => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+      });
+  };
+
+  // Get own user details
+exports.getAuthenticatedSlyder = (req, res) => {
+	let slyderData = {};
+	db.doc(`/Slyders/${req.user.slydetag}`)
+		.get()
+		.then(doc => {
+			if (doc.exists) {
+				slyderData.credentials = doc.data();
+				return db
+					.collection("Splashes")
+					.where("userSlydeTag", "==", req.user.slydetag)
+					.get();
+			}
+		})
+		.then(data => {
+			slyderData.splashes = [];
+			data.forEach(doc => {
+				slyderData.splashes.push(doc.data());
+			});
+			
+			return db
+				.collection("Alerts")
+				.where("recipient", "==", req.user.eslydetag)
+				.orderBy("createdAt", "desc")
+				.limit(16)
+				.get();
+		})
+		.then(data => {
+			slyderData.alerts = [];
+			data.forEach(doc => {
+				slyderData.alerts.push({
+					recipient: doc.data().recipient,
+					sender: doc.data().sender,
+					createdAt: doc.data().createdAt,
+					type: doc.data().type,
+					read: doc.data().read,
+					alertId: doc.id
+				});
+			});
+			return res.json(slyderData);
+		})
+		.catch(err => {
+			console.error(err);
+			return res.status(500).json({ error: err.code });
 		});
 };
 

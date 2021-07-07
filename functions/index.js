@@ -12,7 +12,9 @@ const { db, admin } = require("./util/admin");
 const {
     signup,
     login,
-    resetPassword
+    resetPassword,
+    getSlyderDetails,
+    getAuthenticatedSlyder
 } = require("./handlers/slyders");
 
 const {
@@ -27,6 +29,8 @@ const {
 app.post("/signup", signup);
 app.post("/login", login);
 app.post("/reset", resetPassword);
+app.get("/slyder/:slydetag", getSlyderDetails);
+app.get("/slyder", FBAuth, getAuthenticatedSlyder);
 
 // Slydeshow routes
 app.get("/slydeshows", getAllSlydeshows);

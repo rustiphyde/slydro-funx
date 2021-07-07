@@ -21,8 +21,7 @@ exports.validateSignupData = (data) => {
 	if (isEmpty(data.password)) errors.password = "Field must not be empty";
 	if (data.confirmPassword !== data.password)
 		errors.confirmPassword = "Password fields must match";
-	if (isEmpty(data.firstName)) errors.firstName = "Field must not be empty";
-    if (isEmpty(data.lastName)) errors.lastName = "Field must not be empty";
+	if (isEmpty(data.alias)) errors.falias = "Field must not be empty";
 
 	return {
 		errors,
